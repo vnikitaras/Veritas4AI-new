@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}User Management & Credits | Veritas4ai Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-wrapper {
+        max-width: 1200px;
+        margin: 40px auto 80px auto;
+        padding: 0 20px;
+    }
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .admin-card {
+        background: var(--bg-surface, #ffffff);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        overflow: hidden;
+    }
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    .admin-table th {
+        background: var(--grey-100, #f8fafc);
+        border-bottom: 2px solid var(--border-color, #e2e8f0);
+        padding: 14px 18px;
+        text-align: left;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        color: var(--text-secondary, #64748b);
+        letter-spacing: 0.5px;
+    }
+    .admin-table td {
+        border-bottom: 1px solid var(--border-color, #e2e8f0);
+        padding: 14px 18px;
+        vertical-align: middle;
+    }
+    .user-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--primary-700, #0284c7);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+    .badge-status {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: inline-block;
+    }
+    .badge-pro { background: #dcfce7; color: #166534; }
+    .badge-free { background: #fef3c7; color: #92400e; }
+    .badge-admin { background: #dbeafe; color: #1e40af; }
+    
+    .credit-indicator {
+        font-family: monospace;
+        font-size: 0.85rem;
+        display: flex;
+        gap: 8px;
+    }
+    .credit-tag {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 700;
+    }
+    .credit-available { background: #dcfce7; color: #15803d; }
+    .credit-used { background: #fee2e2; color: #b91c1c; }
+
+    .btn-action-sm {
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+    .btn-action-sm:hover {
+        background: #0284c7;
+        color: #fff;
+        border-color: #0284c7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-wrapper">
+    
+    <div class="admin-header">
+        <div>
+            <h1 style="font-family: var(--font-heading); font-size: 1.8rem; margin: 0 0 4px 0;">Customer Accounts & Credits</h1>
+            <p style="color: var(--text-secondary); margin: 0; font-size: 0.92rem;">Manage client access, subscription tiers, and grant assessment credits.</p>
+        </div>
+        <div style="background: #e0f2fe; color: #0369a1; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem;">
+            Total Registered Users: {{ users|length }}
+        </div>
+    </div>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="admin-card">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Plan / Tier</th>
+                    <th>Free Tier Status</th>
+                    <th style="text-align: right;">Grant Credits / Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>
+                        <div class="user-pill">
+                            <div class="user-avatar">{{ (u.username or u.email)[0]|upper }}</div>
+                            <strong>{{ u.username or 'No Name' }}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-family: monospace;">{{ u.email }}</span>
+                        {% if u.email.lower() == 'manager@gmail.com' %}
+                            <span class="badge-status badge-admin" style="margin-left: 6px;">MASTER ADMIN</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.is_subscribed %}
+                            <span class="badge-status badge-pro">PRO SUBSCRIBER</span>
+                        {% else %}
+                            <span class="badge-status badge-free">FREE PLAN</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="credit-indicator">
+                            <span class="credit-tag {{ 'credit-used' if u.free_short_used else 'credit-available' }}">
+                                Short: {{ 'USED' if u.free_short_used else 'AVAIL' }}
+                            </span>
+                            <span class="credit-tag {{ 'credit-used' if u.free_standard_used else 'credit-available' }}">
+                                Std: {{ 'USED' if u.free_standard_used else 'AVAIL' }}
+                            </span>
+                            <span class="credit-tag {{ 'credit-used' if u.free_long_used else 'credit-available' }}">
+                                Long: {{ 'USED' if u.free_long_used else 'AVAIL' }}
+                            </span>
+                        </div>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: inline-flex; gap: 6px;">
+                            <!-- Κουμπί Reset Free Credits -->
+                            <form method="POST" action="{{ url_for('admin_grant_credits', user_id=u.id) }}" style="display: inline;">
+                                <input type="hidden" name="action_type" value="reset_free">
+                                <button type="submit" class="btn-action-sm" title="Recharge 3 free credits">
+                                    <i class="fas fa-redo"></i> Refill Free Credits
+                                </button>
+                            </form>
+
+                            <!-- Κουμπί Toggle Pro Subscription -->
+                            <form method="POST" action="{{ url_for('admin_grant_credits', user_id=u.id) }}" style="display: inline;">
+                                <input type="hidden" name="action_type" value="toggle_pro">
+                                <button type="submit" class="btn-action-sm" style="border-color: #0284c7; color: #0284c7;">
+                                    <i class="fas fa-crown"></i> {{ 'Revoke Pro' if u.is_subscribed else 'Make Pro' }}
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

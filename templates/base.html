@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Veritas4ai | EU AI Act Compliance{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        /* Responsive CSS βελτιώσεις για κινητά */
+        .mobile-nav-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--text-primary, #0f172a);
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        @media (max-width: 991px) {
+            .navbar-container {
+                position: relative;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .mobile-nav-toggle {
+                display: block;
+            }
+
+            /* Απόκρυψη/Εμφάνιση των κεντρικών pills στο κινητό */
+            .nav-center-absolute {
+                position: static !important;
+                transform: none !important;
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px 0;
+                margin-top: 10px;
+                border-top: 1px solid var(--border-color, #e2e8f0);
+            }
+
+            .nav-center-absolute.mobile-active {
+                display: flex !important;
+            }
+
+            .nav-right-actions {
+                gap: 8px;
+            }
+
+            .user-display-name {
+                display: none; /* Κρύβουμε το όνομα σε πολύ μικρές οθόνες για να χωράει το avatar */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar-wrapper">
+        <div class="navbar-container">
+            <!-- 1. ΑΡΙΣΤΕΡΑ: BRAND LOGO -->
+            <a href="/" class="site-brand">
+                <div class="brand-icon"><i class="fas fa-shield-alt"></i></div>
+                <span>Veritas<span style="color:var(--primary-700);">4ai</span></span>
+            </a>
+
+            <!-- Mobile Hamburger Button -->
+            <button class="mobile-nav-toggle" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Toggle navigation">
+                <i class="fas fa-bars" id="mobileMenuIcon"></i>
+            </button>
+
+            <!-- 2. ΣΤΟ ΚΕΝΤΡΟ: PILL MENU -->
+            <div class="nav-center-absolute" id="navCenterMenu">
+                <a href="/" class="nav-pill-item">Home</a>
+                <a href="{{ url_for('sample_report') }}" class="nav-pill-item">Sample Report</a>
+                <a href="{{ url_for('pricing_page') }}" class="nav-pill-item">Pricing</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="nav-pill-item">Dashboard</a>
+                {% endif %}
+            </div>
+
+            <!-- 3. ΔΕΞΙΑ: ACTIONS & USER PROFILE -->
+            <div class="nav-right-actions">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('form_page') }}" class="btn btn-primary btn-nav-cta">
+                        New Assessment
+                    </a>
+
+                    <!-- User Dropdown Trigger -->
+                    <div class="user-dropdown-wrapper">
+                        <button type="button" class="user-profile-btn" id="userMenuBtn" onclick="toggleUserMenu(event)">
+                            <div class="user-avatar-circle">
+                                {{ (current_user.username or current_user.email)[0]|upper }}
+                            </div>
+                            <span class="user-display-name">
+                                {{ current_user.username or current_user.email.split('@')[0] }}
+                            </span>
+                            <i class="fas fa-chevron-down" style="font-size: 0.7rem; color: #94a3b8;"></i>
+                        </button>
+
+                        <!-- Dropdown Content Box -->
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <div class="dropdown-user-header">
+                                <strong>{{ current_user.username or 'User' }}</strong>
+                                <small>{{ current_user.email }}</small>
+                                <div class="user-plan-badge">
+                                    {% if current_user.is_authenticated and current_user.email == 'manager@gmail.com' %}
+                                        <span class="plan-tag" style="background: #dbeafe; color: #1e40af; font-weight: bold;">UNLIMITED ADMIN</span>
+                                    {% elif current_user.is_authenticated and current_user.is_subscribed %}
+                                        <span class="plan-tag tag-pro">PRO SUBSCRIBER</span>
+                                    {% else %}
+                                        <span class="plan-tag tag-free">FREE PLAN</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="dropdown-links">
+                                <a href="{{ url_for('dashboard') }}" class="dropdown-item">
+                                    <span><i class="fas fa-columns"></i> Dashboard</span>
+                                </a>
+
+                                <!-- Εμφάνιση ΜΟΝΟ στον Manager -->
+                                {% if current_user.is_authenticated and current_user.email.lower() == 'manager@gmail.com' %}
+                                    <a href="{{ url_for('admin_users') }}" class="dropdown-item" style="color: #0284c7; font-weight: 700;">
+                                        <span><i class="fas fa-users-cog"></i> Client Accounts & Credits</span>
+                                    </a>
+                                {% endif %}
+
+                                <div class="dropdown-item" onclick="toggleDarkTheme()">
+                                    <span><i class="fas fa-moon"></i> Dark Theme</span>
+                                    <span class="theme-toggle-status" id="themeStatusText">OFF</span>
+                                </div>
+                            </div>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a href="{{ url_for('auth.logout') }}" class="dropdown-item logout-link">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Sign In</a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Sign Up</a>
+                    
+                    <!-- Dark theme κουμπί για επισκέπτη (Visitor) -->
+                    <button type="button" id="darkModeToggle" class="btn-theme-circle" title="Toggle Theme" onclick="toggleDarkTheme()">
+                        <i class="fas fa-moon" id="visitorThemeIcon"></i>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div>
+                    <strong>Veritas4ai Governance Suite</strong>
+                    <p class="muted">Automated EU AI Act conformity assessments & ISO 42001 technical documentation.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; 2026 Veritas4ai. All rights reserved.</div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('navCenterMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            if (menu) {
+                menu.classList.toggle('mobile-active');
+                if (icon) {
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                }
+            }
+        }
+
+        // Ενιαία λογική Dark Theme για συνδεδεμένους χρήστες και επισκέπτες
+        function applyTheme(theme) {
+            const isDark = (theme === 'dark');
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            if (isDark) {
+                document.body.classList.add('dark-theme', 'dark-mode');
+            } else {
+                document.body.classList.remove('dark-theme', 'dark-mode');
+            }
+
+            localStorage.setItem('theme', theme);
+
+            const statusText = document.getElementById('themeStatusText');
+            if (statusText) {
+                statusText.innerText = isDark ? 'ON' : 'OFF';
+            }
+
+            const visitorIcon = document.getElementById('visitorThemeIcon');
+            if (visitorIcon) {
+                if (isDark) {
+                    visitorIcon.classList.remove('fa-moon');
+                    visitorIcon.classList.add('fa-sun');
+                } else {
+                    visitorIcon.classList.remove('fa-sun');
+                    visitorIcon.classList.add('fa-moon');
+                }
+            }
+        }
+
+        function toggleDarkTheme() {
+            const current = localStorage.getItem('theme') || 'light';
+            const next = (current === 'dark') ? 'light' : 'dark';
+            applyTheme(next);
+        }
+
+        // Dropdown toggle
+        function toggleUserMenu(e) {
+            if (e) e.stopPropagation();
+            const menu = document.getElementById('userDropdownMenu');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        window.addEventListener('click', function(e) {
+            const wrapper = document.querySelector('.user-dropdown-wrapper');
+            const menu = document.getElementById('userDropdownMenu');
+            if (wrapper && menu && !wrapper.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+
+        // Αρχικοποίηση theme κατά τη φόρτωση της σελίδας
+        document.addEventListener('DOMContentLoaded', function() {
+            const saved = localStorage.getItem('theme') || 'light';
+            applyTheme(saved);
+        });
+    </script>
+</body>
+</html>

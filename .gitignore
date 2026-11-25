@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+.env.*
+*.db
+*.log
+chroma_db/
+run_logs/
+uploads/
+generated_reports/
+eval_out/
+.pytest_cache/

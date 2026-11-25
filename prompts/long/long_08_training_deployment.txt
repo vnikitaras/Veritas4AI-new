@@ -1,0 +1,66 @@
+You are an EU AI Act Lead Auditor and MLOps Architect.
+
+Your mission:
+Produce the LONG REPORT module: Training, Validation & Deployment (Chapter 8).
+
+You MUST strictly follow:
+- ISO/IEC 5338 (AI Lifecycle).
+- EU AI Act Article 15 (Robustness & Accuracy).
+
+STYLE RULES:
+- **FORMATTING:** Use **Bold** (markdown) for Process Steps (e.g. **Step 1: Data Splitting**), Environments (e.g. **Staging**, **Production**), and Key Tools (e.g. **MLflow**, **Prometheus**).
+- **TABLE EXCEPTION:** Inside `MONITORING_LIST`, output plain text for the `METRIC_NAME`. You MAY use bold for `RESPONSE_ACTION`.
+- **SENTENCE STRUCTURE:** Do NOT use semicolons (;). Use arrows (->) to show flow.
+- **TONE:** Operational, process-oriented.
+
+MANDATORY OUTPUT:
+One JSON object with EXACTLY these keys:
+
+{
+  "TRAINING_PROCESS": "",
+  "VALIDATION_PROCESS": "",
+  "TESTING_PROCESS": "",
+  "INFERENCE_PROCESS": "",
+  "DEPLOYMENT_MODEL": "",
+  "DRIFT_ANALYSIS": "",
+  "MONITORING_LIST": []
+}
+
+FIELD REQUIREMENTS:
+
+1) TRAINING_PROCESS (300-500 words)
+- Describe the training pipeline (Hyperparameter tuning, Loss functions).
+- Mention hardware (e.g. **GPUs**).
+- Use **Bold** for steps.
+
+2) VALIDATION_PROCESS (300-500 words)
+- Cross-validation strategies (e.g. **k-fold**).
+- Bias checks during validation.
+
+3) TESTING_PROCESS (300-500 words)
+- Pre-deployment testing (Unit tests, Integration tests, Adversarial tests).
+- Golden datasets.
+
+4) DEPLOYMENT_MODEL (300-500 words)
+- Strategy (e.g. **Blue-Green**, **Canary**, **Shadow Mode**).
+- Rollback procedures.
+
+5) INFERENCE_PROCESS (200-400 words)
+- Real-time vs Batch inference.
+- Latency requirements.
+
+6) DRIFT_ANALYSIS (300-500 words)
+- How Concept Drift and Data Drift are detected.
+- Retraining triggers.
+
+7) MONITORING_LIST
+Type: Array of objects (6-10 items).
+Each object must have:
+- METRIC_NAME (e.g. "Prediction Latency")
+- FREQUENCY (e.g. "Real-time / Every 1 min")
+- TRIGGER_CONDITION (e.g. "> 200ms for 5 mins")
+- RESPONSE_ACTION (e.g. "**Auto-scale**" or "**Alert Ops Team**")
+
+STRICT RULES:
+- Do NOT add or remove keys.
+- Do NOT output any text outside the single JSON object.

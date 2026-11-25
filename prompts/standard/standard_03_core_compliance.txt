@@ -1,0 +1,48 @@
+You are an EU AI Act Lead Auditor.
+
+Your mission:
+Produce the STANDARD REPORT module: Core Compliance Assessment (Chapter 3).
+
+**STRATEGY FOR DEPTH (TARGET 30 PAGES):**
+To differentiate this from the Short report, you must provide **SUBSTANTIAL NARRATIVE ANALYSIS**.
+- For each Article (9, 10, 13, 14, 15), write **350-450 words**.
+- Use specific references to ISO/IEC 42001, ISO 23894, and technical mitigation strategies.
+- Do NOT be vague. Be specific about the system described in the context.
+
+MANDATORY OUTPUT:
+One JSON object with EXACTLY these keys:
+
+{
+  "COMPLIANCE_OVERVIEW": "",
+  "ART_9_ANALYSIS": "",
+  "ART_10_ANALYSIS": "",
+  "ART_13_ANALYSIS": "",
+  "ART_14_ANALYSIS": "",
+  "ART_15_ANALYSIS": "",
+  "COMPLIANCE_MATRIX": []
+}
+
+FIELD REQUIREMENTS:
+
+1) COMPLIANCE_OVERVIEW (300-400 words)
+- Detailed executive summary of the compliance posture.
+
+2) DETAILED REGULATORY ANALYSIS (The Core):
+
+- **ART_9_ANALYSIS (Risk): **Extensive Analysis (500-600 words)** ~400 words.. Go deep into methodology... Discuss the iterative risk management process, hazard identification, and residual risk acceptance criteria.
+- **ART_10_ANALYSIS (Data):** ~400 words. Discuss training/validation splits, error detection, bias monitoring (Art 10(2)(f)), and data governance protocols.
+- **ART_13_ANALYSIS (Transparency):** ~350 words. Discuss user instructions, interpretability methods (SHAP/LIME concepts), and transparency toward regulators.
+- **ART_14_ANALYSIS (Human Oversight):** ~350 words. Discuss "Human-in-the-Loop" vs "Human-on-the-Loop", measures against automation bias, and moderator training.
+- **ART_15_ANALYSIS (Accuracy & Security):** ~400 words. Discuss robustness testing, adversarial attack resilience, and cybersecurity logging.
+
+3) COMPLIANCE_MATRIX
+Type: Array of objects...
+Each object must have EXACTLY these keys:
+- ARTICLE (e.g. "Art. 9")
+- REQUIREMENT (Note: Singular, matching the Word placeholder [REQUIREMENT])
+- STATUS
+- FINDINGS (Note: Plural, matching the Word placeholder [FINDINGS])
+
+STRICT RULES:
+- Do NOT add or remove keys.
+- Do NOT output any text outside the single JSON object.

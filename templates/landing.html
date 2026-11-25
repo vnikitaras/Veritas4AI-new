@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}EU AI Act Compliance Tool - Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container fade-up-hidden">
+        <h1 class="hero-title">
+            Ensure Your AI Systems <br>
+            <span style="color: var(--primary-500);">Comply with EU AI Act</span>
+        </h1>
+        <p class="hero-subtitle">
+            Generate comprehensive compliance reports in minutes. 
+            Professional analysis, actionable insights, and regulatory confidence.
+        </p>
+        
+        <div class="hero-buttons">
+            <a href="/form" class="btn btn-primary btn-large">
+                <i class="fas fa-magic" style="margin-right:8px;"></i> Generate Report
+            </a>
+            <a href="#features" class="btn btn-secondary btn-large">
+                <i class="fas fa-info-circle" style="margin-right:8px;"></i> Learn More
+            </a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-num">10K+</div>
+                <div class="muted">Reports Generated</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" style="color: var(--accent-green);">95%</div>
+                <div class="muted">Accuracy Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num" style="color: var(--accent-blue);">&lt; 5min</div>
+                <div class="muted">Generation Time</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2>Why Choose Our Tool?</h2>
+            <p class="muted">Focused on speed, accuracy, and usability.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-up-hidden">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Lightning Fast</h3>
+                <p>Generate reports in under 5 minutes using our AI engine.</p>
+            </div>
+            <div class="feature-card fade-up-hidden">
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <h3>AI Analysis</h3>
+                <p>Advanced mapping against EU AI Act Articles & Annexes.</p>
+            </div>
+            <div class="feature-card fade-up-hidden">
+                <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                <h3>Multi-Language</h3>
+                <p>Generate full reports in English or Greek.</p>
+            </div>
+            <div class="feature-card fade-up-hidden">
+                <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
+                <h3>PDF Export</h3>
+                <p>Download professional, formatted PDF reports ready for stakeholders.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works-section">
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2>How It Works</h2>
+            <p class="muted">Simple three-step process to compliance confidence</p>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step-item fade-up-hidden">
+                <div class="step-number">1</div>
+                <div class="step-title">Enter Details</div>
+                <p class="muted">Provide basic info about your AI system, role, and domain.</p>
+            </div>
+            <div class="step-item fade-up-hidden" style="transition-delay: 0.1s;">
+                <div class="step-number">2</div>
+                <div class="step-title">AI Analysis</div>
+                <p class="muted">Our engine maps your system against Articles 5-15 & Annex III.</p>
+            </div>
+            <div class="step-item fade-up-hidden" style="transition-delay: 0.2s;">
+                <div class="step-number">3</div>
+                <div class="step-title">Download PDF</div>
+                <p class="muted">Get a structured report with action plans and documentation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="pricing" style="padding: 80px 0;">
+    <div class="container">
+        <div class="pricing-header" style="text-align: center; margin-bottom: 50px;">
+            <h2>Report Options</h2>
+            <p class="muted">Select the depth of analysis you require</p>
+        </div>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-title">Quick Assessment</div>
+                <div class="pricing-sub">~8 Pages • Flash Audit<br>Executive Summary</div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Risk Classification Verdict</li>
+                    <li><i class="fas fa-check"></i> Executive Summary & Context</li>
+                    <li><i class="fas fa-check"></i> Compliance Health Check</li>
+                    <li><i class="fas fa-check"></i> Priority Action Plan</li>
+                </ul>
+                <a href="/form" class="btn btn-secondary" style="width:100%; margin-top:20px;">Select</a>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-title">Standard Report</div>
+                <div class="pricing-sub">~25 Pages • Detailed Analysis<br>Core Compliance</div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Articles 9-15 Analysis</li>
+                                            <li><i class="fas fa-check"></i> Risk Register & Matrix</li>
+                                            <li><i class="fas fa-check"></i> Data Governance & Oversight</li>
+                                            <li><i class="fas fa-check"></i> Strategic Roadmap & Case Studies</li>
+                                        </ul>
+                <a href="/form" class="btn btn-primary" style="width:100%; margin-top:20px;">Select</a>
+            </div>
+
+            <div class="pricing-card">
+                <div class="pricing-title">Comprehensive Audit</div>
+                <div class="pricing-sub">~65+ Pages • Full Technical Depth<br>Complete Conformity</div>
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Full Annex IV Tech Docs</li>
+                    <li><i class="fas fa-check"></i> ISO 42001 Governance Framework</li>
+                    <li><i class="fas fa-check"></i> Deep Risk & Quantitative Analysis</li>
+                    <li><i class="fas fa-check"></i> Complete System Architecture</li>
+                </ul>
+                <a href="/form" class="btn btn-secondary" style="width:100%; margin-top:20px;">Select</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta" style="padding: 80px 0; text-align: center; background: radial-gradient(circle, rgba(27,167,179,0.05) 0%, rgba(255,255,255,0) 100%);">
+    <div class="container">
+        <h2>Ready to Ensure Compliance?</h2>
+        <p class="muted" style="margin-bottom: 30px;">Start your AI Act compliance assessment today.</p>
+        <a href="/form" class="btn btn-primary btn-large">
+            <i class="fas fa-rocket"></i> Start Now
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+{% endblock %}

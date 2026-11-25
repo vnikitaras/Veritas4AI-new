@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Generate Report - EU AI Act Compliance{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- ---  LOADING OVERLAY --- -->
+<div id="modernLoadingOverlay" class="modern-overlay" style="display: none;">
+    <div class="modern-loader-card">
+        <!-- Animated Spinner -->
+        <div class="loader-animation">
+            <div class="spinner"></div>
+        </div>
+        
+        <!-- Τίτλος και δυναμικό κείμενο -->
+        <h3 id="modernProgressTitle" style="color: #1f2937; margin-bottom: 8px;">Το Veritas4AI αναλύει τα δεδομένα...</h3>
+        <p id="modernProgressText" class="progress-status-text">Αρχικοποίηση συστήματος...</p>
+        
+        <!-- Animated Progress Bar -->
+        <div class="modern-progress-container">
+            <div id="modernProgressBar" class="modern-progress-bar"></div>
+        </div>
+    </div>
+</div>
+
+<section class="form-section">
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h1>EU AI Act Compliance Report</h1>
+                <p class="muted">Generate a structured assessment based on the official EU regulatory framework.</p>
+
+                <div class="stepper">
+                    <div class="step active" data-step="1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Basic Info</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Details</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Config & Review</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <form id="reportForm" method="POST" enctype="multipart/form-data" action="/generate-report">
+                    
+                    <div class="form-step active" id="step1">
+                        <div class="form-group">
+                            <label class="form-label">Input Method</label>
+                            <div class="mode-cards">
+                                <label class="mode-card">
+                                    <input type="radio" name="input_mode" value="application" checked onchange="toggleMode('application')">
+                                    <div class="mode-card-content">
+                                        <i class="fas fa-laptop-code fa-2x" style="margin-bottom:15px; color:var(--primary-700);"></i>
+                                        <h3>Describe Application</h3>
+                                        <p class="muted" style="font-size:0.9rem; margin-top:5px;">Manual entry</p>
+                                    </div>
+                                </label>
+                                <label class="mode-card">
+                                    <input type="radio" name="input_mode" value="files" onchange="toggleMode('files')">
+                                    <div class="mode-card-content">
+                                        <i class="fas fa-folder-open fa-2x" style="margin-bottom:15px; color:var(--accent-blue);"></i>
+                                        <h3>Upload Docs</h3>
+                                        <p class="muted" style="font-size:0.9rem; margin-top:5px;">PDF / DOCX / ZIP</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="mode-application">
+                            <div class="form-group">
+                                <label for="appName">Software product, service or system to be analysed <span class="required">*</span></label>
+                                <input type="text" id="appName" name="app_name" required placeholder="e.g. Smart HR System v2.0">
+                            </div>
+                            <div class="form-group">
+                                <label for="appUrl">Web Site URL</label>
+                                <input type="text" id="appUrl" name="app_url" placeholder="e.g. www.example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Your Role <span class="required">*</span></label>
+                                <select id="organizationRole" name="organization_role" required>
+                                    <option value="" selected disabled>Select your role...</option>
+                                    <option value="AI provider">Software / Systems Development Company (AI provider)</option>
+                                    <option value="AI user">Software Service or Product Consumer (AI user)</option>
+                                    <option value="Public Sector Body">Public Sector Body</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="mode-files" style="display:none;">
+                            <div class="form-group">
+                                <label>Upload Documents <span class="required">*</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" name="supporting_files" id="fileInput" multiple hidden accept=".pdf,.docx,.txt,.zip">
+                                    <div class="file-drop-zone" id="dropZone" style="cursor: pointer;">
+                                        <div class="file-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                                        <p id="fileListText"><strong>Click to upload</strong> or drag & drop</p>
+                                        <p class="muted" id="fileHelpText">PDF, DOCX, ZIP, TXT (Max 10MB)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="application_name_files" id="applicationNameFiles" placeholder="System Name (Optional)">
+                            </div>
+                        </div>
+
+                        <div class="form-actions" style="justify-content: flex-end;">
+                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-step" id="step2">
+                        <div class="form-group">
+                            <label>Application Area / Domain <span class="required">*</span></label>
+                            <select id="applicationArea" name="application_area" required>
+                                <option value="" selected disabled>Select an application area...</option>
+                                <option value="Governance & Public Administration">Governance & Public Administration</option>
+                                <option value="Health & Care">Health & Care</option>
+                                <option value="Education & Research">Education & Research</option>
+                                <option value="Finance, Banking & Insurance">Finance, Banking & Insurance</option>
+                                <option value="Commerce & Customer Services">Commerce & Customer Services</option>
+                                <option value="Industry, Supply Chain & Natural Resources">Industry, Supply Chain & Natural Resources</option>
+                                <option value="Energy, Utilities & Built Environment">Energy, Utilities & Built Environment</option>
+                                <option value="Transport, Mobility & Logistics">Transport, Mobility & Logistics</option>
+                                <option value="Public Safety, Defense & Security">Public Safety, Defense & Security</option>
+                                <option value="Media, Culture & Entertainment">Media, Culture & Entertainment</option>
+                                <option value="Core Digital Infrastructure & Platforms">Core Digital Infrastructure & Platforms</option>
+                                <option value="Other">Other</option>
+                            </select>
+
+                            <div id="riskIndicatorBox" style="display: none; margin-top: 15px; padding: 15px; border-radius: 8px; align-items: flex-start; gap: 12px; transition: all 0.3s ease;">
+                                <i id="riskIcon" class="fas fa-info-circle" style="font-size: 1.4rem; margin-top: 2px;"></i>
+                                <div>
+                                    <h4 id="riskTitle" style="margin: 0 0 5px 0; font-size: 1rem; font-weight: 600;">Risk Assessment</h4>
+                                    <p id="riskText" style="margin: 0; font-size: 0.9rem; line-height: 1.4;"></p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="applicationDescription" name="application_description" rows="5" placeholder="Describe the intended purpose and data used..."></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Back</button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-step" id="step3">
+                        
+                        <div class="form-group">
+                            <label style="font-size: 1.1rem; text-align: center; display: block; margin-bottom: 20px;">
+                                Select Report Package <span class="required">*</span>
+                            </label>
+                            
+                            <div class="report-selection-grid">
+                                <!-- 1. SHORT REPORT -->
+                                {% set short_locked = current_user.is_authenticated and current_user.free_short_used and not current_user.is_subscribed and current_user.paid_credits == 0 %}
+                                <label class="report-option {% if short_locked %}disabled-option{% endif %}" style="{% if short_locked %}opacity: 0.55; cursor: not-allowed; filter: grayscale(80%);{% endif %}">
+                                    <input type="radio" name="details" value="short" required {% if short_locked %}disabled{% endif %}>
+                                    <div class="report-card-content">
+                                        <div class="report-card-icon"><i class="fas fa-bolt"></i></div>
+                                        <div class="report-card-title">
+                                            Quick Assessment
+                                            {% if short_locked %}
+                                                <span style="display: block; font-size: 0.72rem; color: #ef4444; font-weight: bold; margin-top: 3px;">(Εξαντλήθηκε)</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="report-card-desc">Executive Summary & Risk Classification.</div>
+                                    </div>
+                                </label>
+
+                                <!-- 2. STANDARD REPORT -->
+                                {% set standard_locked = current_user.is_authenticated and current_user.free_standard_used and not current_user.is_subscribed and current_user.paid_credits == 0 %}
+                                <label class="report-option {% if standard_locked %}disabled-option{% endif %}" style="{% if standard_locked %}opacity: 0.55; cursor: not-allowed; filter: grayscale(80%);{% endif %}">
+                                    <input type="radio" name="details" value="standard" required {% if standard_locked %}disabled{% endif %}>
+                                    <div class="report-card-content">
+                                        <div class="report-card-icon"><i class="fas fa-clipboard-check"></i></div>
+                                        <div class="report-card-title">
+                                            Standard Report
+                                            {% if standard_locked %}
+                                                <span style="display: block; font-size: 0.72rem; color: #ef4444; font-weight: bold; margin-top: 3px;">(Εξαντλήθηκε)</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="report-card-desc">Articles 9-15 Analysis & Gap Assessment.</div>
+                                    </div>
+                                </label>
+
+                                <!-- 3. LONG REPORT -->
+                                {% set long_locked = current_user.is_authenticated and current_user.free_long_used and not current_user.is_subscribed and current_user.paid_credits == 0 %}
+                                <label class="report-option {% if long_locked %}disabled-option{% endif %}" style="{% if long_locked %}opacity: 0.55; cursor: not-allowed; filter: grayscale(80%);{% endif %}">
+                                    <input type="radio" name="details" value="long" required {% if long_locked %}disabled{% endif %}>
+                                    <div class="report-card-content">
+                                        <div class="report-card-icon"><i class="fas fa-layer-group"></i></div>
+                                        <div class="report-card-title">
+                                            Comprehensive
+                                            {% if long_locked %}
+                                                <span style="display: block; font-size: 0.72rem; color: #ef4444; font-weight: bold; margin-top: 3px;">(Εξαντλήθηκε)</span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="report-card-desc">Architecture, Model Cards & Tech Docs.</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                        <div class="form-group" style="margin-top: 30px; text-align: center;">
+                            <label style="margin-bottom:10px;">Target Language</label>
+                            <div style="display: inline-flex; gap: 20px; background: var(--grey-100); padding: 8px 20px; border-radius: 20px;">
+                                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;">
+                                    <input type="radio" name="language" value="en" checked> <strong>English</strong> 🇬🇧
+                                </label>
+                                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;">
+                                    <input type="radio" name="language" value="el"> <strong>Greek</strong> 🇬🇷
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="summary-card">
+                            <div class="summary-header">
+                                <i class="fas fa-receipt" style="color:var(--primary-700);"></i>
+                                <h3>Configuration Summary</h3>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-grid">
+                                    <div class="summary-item">
+                                        <span class="summary-label">System Name</span>
+                                        <span class="summary-value" id="rev-name">Checking...</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Role</span>
+                                        <span class="summary-value" id="rev-role">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Domain</span>
+                                        <span class="summary-value" id="rev-domain">-</span>
+                                    </div>
+                                    <div class="summary-item">
+                                        <span class="summary-label">Est. Risk</span>
+                                        <div id="rev-risk-badge">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-large">
+                                <i class="fas fa-magic" style="margin-right:8px;"></i> Generate Now
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/form-handler.js') }}"></script>
+{% endblock %}

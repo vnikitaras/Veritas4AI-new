@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Pricing & Plans | Veritas4ai{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pricing-container {
+        max-width: 1140px;
+        margin: 50px auto 90px auto;
+        padding: 0 20px;
+    }
+    .pricing-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    .pricing-header h1 {
+        font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        color: var(--text-primary, #0f172a);
+    }
+    .pricing-header p {
+        color: var(--text-secondary, #64748b);
+        font-size: 1.05rem;
+        max-width: 620px;
+        margin: 0 auto;
+    }
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+        gap: 25px;
+        align-items: stretch;
+    }
+    .pricing-card {
+        background: var(--bg-surface, #ffffff);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: 16px;
+        padding: 35px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        position: relative;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .pricing-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .pricing-card.featured {
+        border: 2px solid var(--primary-700, #0284c7);
+        box-shadow: 0 8px 30px rgba(2, 132, 199, 0.12);
+    }
+    .featured-badge {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-700, #0284c7);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 14px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .tier-name {
+        font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text-primary, #0f172a);
+    }
+    .tier-desc {
+        color: var(--text-secondary, #64748b);
+        font-size: 0.9rem;
+        min-height: 42px;
+        margin-bottom: 20px;
+    }
+    .tier-price {
+        font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+        font-size: 2.6rem;
+        font-weight: 800;
+        color: var(--text-primary, #0f172a);
+        margin-bottom: 25px;
+    }
+    .tier-price span {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--text-secondary, #64748b);
+    }
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 30px 0;
+        flex-grow: 1;
+    }
+    .feature-list li {
+        font-size: 0.9rem;
+        color: var(--text-secondary, #334155);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .feature-list li i {
+        color: #10b981;
+        font-size: 0.85rem;
+    }
+    .feature-list li.muted {
+        color: var(--grey-500, #94a3b8);
+    }
+    .feature-list li.muted i {
+        color: #cbd5e1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="pricing-container">
+    <div class="pricing-header">
+        <h1>Conformity Assessment Plans</h1>
+        <p>Automated EU AI Act compliance dossiers for AI Startups, SMEs, and Enterprise governance teams.</p>
+    </div>
+
+    <div class="pricing-grid">
+        <!-- 1. Free Trial -->
+        <div class="pricing-card">
+            <div>
+                <div class="tier-name">Free Starter</div>
+                <div class="tier-desc">Test all assessment tiers on your AI product with zero commitment.</div>
+                <div class="tier-price">€0 <span>/ free</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> 1x Quick Assessment (Short)</li>
+                    <li><i class="fas fa-check"></i> 1x Standard Report (Articles 9-15)</li>
+                    <li><i class="fas fa-check"></i> 1x Comprehensive Dossier (Long)</li>
+                    <li><i class="fas fa-check"></i> Word (.docx) & PDF Export</li>
+                    <li class="muted"><i class="fas fa-times"></i> Priority processing queue</li>
+                    <li class="muted"><i class="fas fa-times"></i> Continuous API integration</li>
+                </ul>
+            </div>
+            <div>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('form_page') }}" class="btn btn-secondary" style="width: 100%; text-align: center; display: block; box-sizing: border-box; padding: 12px;">Go to Assessment Form</a>
+                {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-secondary" style="width: 100%; text-align: center; display: block; box-sizing: border-box; padding: 12px;">Start Free Trial</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 2. Pay As You Go -->
+        <div class="pricing-card featured">
+            <div class="featured-badge">Most Popular</div>
+            <div>
+                <div class="tier-name">Pay-Per-Assessment</div>
+                <div class="tier-desc">Single-system audit files ready for submission to regulatory bodies.</div>
+                <div class="tier-price">€149 <span>/ assessment</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Choose Standard (€149) or Long (€499)</li>
+                    <li><i class="fas fa-check"></i> Articles 9-15 & ISO 42001 Mapping</li>
+                    <li><i class="fas fa-check"></i> Top 5 Risks Matrix & Remediation Budget</li>
+                    <li><i class="fas fa-check"></i> Model Cards & Annex IV Technical Dossier</li>
+                    <li><i class="fas fa-check"></i> Commercial audit license</li>
+                    <li class="muted"><i class="fas fa-times"></i> Monthly automated drift tracking</li>
+                </ul>
+            </div>
+            <div>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="width: 100%; text-align: center; display: block; box-sizing: border-box; padding: 12px;">Get Assessment Credits</a>
+            </div>
+        </div>
+
+        <!-- 3. Enterprise Plan -->
+        <div class="pricing-card">
+            <div>
+                <div class="tier-name">Continuous Pro</div>
+                <div class="tier-desc">For active AI development teams and compliance consultancies.</div>
+                <div class="tier-price">€349 <span>/ month</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Unlimited Standard Reports per month</li>
+                    <li><i class="fas fa-check"></i> 5 Comprehensive Dossiers per month</li>
+                    <li><i class="fas fa-check"></i> Post-Market Monitoring (PMM) templates</li>
+                    <li><i class="fas fa-check"></i> Dedicated high-speed LLM processing</li>
+                    <li><i class="fas fa-check"></i> Priority compliance auditor review</li>
+                </ul>
+            </div>
+            <div>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-secondary" style="width: 100%; text-align: center; display: block; box-sizing: border-box; padding: 12px;">Subscribe to Pro</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

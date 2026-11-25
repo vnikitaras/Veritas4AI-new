@@ -1,0 +1,890 @@
+{% extends "base.html" %}
+{% block title %}Official Sample Reports | Veritas4ai{% endblock %}
+
+{% block extra_css %}
+<style>
+    .sample-page-wrapper {
+        max-width: 1240px;
+        margin: 35px auto 90px auto;
+        padding: 0 20px;
+    }
+
+    /* TOP MAIN TIER TOGGLE (SHORT - STANDARD - COMPREHENSIVE) */
+    .tier-toggle-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 25px;
+    }
+    .tier-toggle-pill {
+        background: #f1f5f9;
+        border: 2px solid #e2e8f0;
+        border-radius: 40px;
+        padding: 5px;
+        display: inline-flex;
+        gap: 6px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    html[data-theme="dark"] .tier-toggle-pill {
+        background: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+    .tier-toggle-btn {
+        border: none;
+        background: transparent;
+        padding: 10px 24px;
+        border-radius: 30px;
+        font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .tier-toggle-btn:hover {
+        color: #0f172a;
+    }
+    html[data-theme="dark"] .tier-toggle-btn:hover {
+        color: #f8fafc !important;
+    }
+    .tier-toggle-btn.active {
+        background: #ffffff;
+        color: #0284c7;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
+    }
+    html[data-theme="dark"] .tier-toggle-btn.active {
+        background: #1e293b !important;
+        color: #38bdf8 !important;
+    }
+
+    /* REPORT CONTAINER CARD */
+    .report-dossier-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.04);
+        overflow: hidden;
+    }
+    html[data-theme="dark"] .report-dossier-card {
+        background: #131f37 !important;
+        border-color: #1e293b !important;
+    }
+
+    /* DOSSIER HEADER */
+    .dossier-header {
+        background: #0f172a;
+        color: #ffffff;
+        padding: 35px 40px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .badge-high-risk {
+        background: rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+    .header-metadata-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.85rem;
+    }
+    .header-metadata-grid span {
+        color: #94a3b8;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    /* KPI SCORECARD BAR */
+    .scorecard-bar {
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 22px 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    html[data-theme="dark"] .scorecard-bar {
+        background: #0b1329 !important;
+        border-bottom-color: #1e293b !important;
+    }
+    .score-block {
+        border-left: 4px solid #0284c7;
+        padding-left: 14px;
+    }
+    .score-label {
+        font-size: 0.76rem;
+        color: #64748b;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .score-val {
+        font-size: 1.95rem;
+        font-weight: 800;
+        font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+        color: #0f172a;
+        line-height: 1.15;
+        margin: 4px 0;
+    }
+    html[data-theme="dark"] .score-val {
+        color: #f8fafc !important;
+    }
+
+    /* =========================================================
+       SUB-TABS SEGMENTED TOOLBAR (ΕΜΦΑΝΗΣ, ΣΥΓΧΡΟΝΗ ΜΠΑΡΑ)
+       ========================================================= */
+    .sub-tabs-toolbar {
+        background: #f1f5f9;
+        border-bottom: 2px solid #e2e8f0;
+        padding: 8px 30px;
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: thin;
+    }
+    html[data-theme="dark"] .sub-tabs-toolbar {
+        background: #0f172a !important;
+        border-bottom-color: #1e293b !important;
+    }
+    .sub-tab-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-family: var(--font-heading, 'Space Grotesk', sans-serif);
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+    .sub-tab-btn:hover {
+        background: rgba(0, 0, 0, 0.04);
+        color: #0f172a;
+    }
+    html[data-theme="dark"] .sub-tab-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #f8fafc !important;
+    }
+    .sub-tab-btn.active {
+        background: #ffffff;
+        color: #0284c7;
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        font-weight: 700;
+    }
+    html[data-theme="dark"] .sub-tab-btn.active {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        color: #38bdf8 !important;
+    }
+
+    /* DOSSIER BODY & ACTION BAR */
+    .dossier-body {
+        padding: 35px 40px;
+    }
+    .report-download-strip {
+        background: #f0fdf4;
+        border: 1.5px solid #bbf7d0;
+        border-radius: 12px;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    html[data-theme="dark"] .report-download-strip {
+        background: #142820 !important;
+        border-color: #1e4a38 !important;
+    }
+    .btn-download-pdf {
+        background: #0284c7;
+        color: #ffffff !important;
+        font-weight: 700;
+        padding: 11px 22px;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.92rem;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+    }
+    .btn-download-pdf:hover {
+        background: #0369a1;
+        transform: translateY(-1px);
+    }
+
+    /* FINDING & ACTION CARDS */
+    .finding-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 16px;
+        border-left: 4px solid #cbd5e1;
+    }
+    html[data-theme="dark"] .finding-card {
+        background: #0f172a !important;
+        border-color: #1e293b !important;
+    }
+    .finding-card.critical { border-left-color: #ef4444; }
+    .finding-card.high { border-left-color: #f97316; }
+    .finding-card.medium { border-left-color: #f59e0b; }
+    
+    .finding-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .tag-pill {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 4px;
+        text-transform: uppercase;
+    }
+    .tag-crit { background: #fee2e2; color: #b91c1c; }
+    .tag-high { background: #ffedd5; color: #c2410c; }
+    .tag-med { background: #fef3c7; color: #b45309; }
+    .tag-good { background: #dcfce7; color: #15803d; }
+
+    /* TABLES */
+    .audit-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        margin-top: 15px;
+    }
+    .audit-table th {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 12px 14px;
+        text-align: left;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+    html[data-theme="dark"] .audit-table th {
+        background: #0b1329 !important;
+        border-color: #1e293b !important;
+        color: #94a3b8 !important;
+    }
+    .audit-table td {
+        border: 1px solid #e2e8f0;
+        padding: 12px 14px;
+        vertical-align: top;
+    }
+    html[data-theme="dark"] .audit-table td {
+        border-color: #1e293b !important;
+    }
+
+    .tab-content-block { display: none; }
+    .tab-content-block.active { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sample-page-wrapper">
+    
+    <!-- TOP TIER TOGGLE BAR -->
+    <div class="tier-toggle-container">
+        <div class="tier-toggle-pill">
+            <button type="button" class="tier-toggle-btn" onclick="setMainTier('short')">
+                <i class="fas fa-bolt"></i> Quick Assessment (Short — 9p)
+            </button>
+            <button type="button" class="tier-toggle-btn" onclick="setMainTier('standard')">
+                <i class="fas fa-clipboard-check"></i> Standard Report (25p)
+            </button>
+            <button type="button" class="tier-toggle-btn active" onclick="setMainTier('comprehensive')">
+                <i class="fas fa-layer-group"></i> Comprehensive Dossier (69p)
+            </button>
+        </div>
+    </div>
+
+    <!-- DOSSIER CARD CONTAINER -->
+    <div class="report-dossier-card">
+        
+        <!-- HEADER COMPONENT -->
+        <div class="dossier-header">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <span class="badge-high-risk">HIGH-RISK AI SYSTEM • ANNEX III, POINT 4(b)</span>
+                    <h1 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); font-size: 2.1rem; margin: 12px 0 6px 0; color: #ffffff;">
+                        HireVue AI Candidate Screening Engine
+                    </h1>
+                    <p style="color: #94a3b8; font-size: 0.95rem; margin: 0;">
+                        Automated Resume Screening, Video Analytics & Predictive Hiring Scoring
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">Dossier Identifier</span>
+                    <div style="font-family: monospace; font-size: 1.15rem; color: #38bdf8; font-weight: 700;">
+                        V4AI-2026-HR-0891
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-metadata-grid">
+                <div><span>DEPLOYER / PROVIDER</span> TalentTech Global SA</div>
+                <div><span>TARGET DOMAIN</span> Employment & Recruitment</div>
+                <div><span>AUDIT STANDARD</span> EU AI Act & ISO/IEC 42001</div>
+                <div><span>ASSESSMENT DATE</span> 27/10/2026</div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TIER 1: QUICK ASSESSMENT (SHORT — 9 PAGES)                                -->
+        <!-- ========================================================================= -->
+        <div id="view-short" class="tier-view-block" style="display: none;">
+            
+            <div class="scorecard-bar">
+                <div class="score-block" style="border-left-color: #ef4444;">
+                    <div class="score-label">1.1 Classification</div>
+                    <div class="score-val" style="color: #ef4444;">High-Risk</div>
+                    <small style="color: #64748b;">Annex III, Point 4(b)</small>
+                </div>
+                <div class="score-block" style="border-left-color: #0284c7;">
+                    <div class="score-label">1.2 Overall Readiness</div>
+                    <div class="score-val" style="color: #0284c7;">70 <span style="font-size: 1rem; color: #64748b;">/ 100</span></div>
+                    <small style="color: #64748b;">Actionable Gaps Present</small>
+                </div>
+                <div class="score-block" style="border-left-color: #f59e0b;">
+                    <div class="score-label">1.3 Priority Gaps</div>
+                    <div class="score-val" style="color: #f59e0b;">3 <span style="font-size: 1rem; color: #64748b;">Areas</span></div>
+                    <small style="color: #64748b;">Articles 9, 10 & 14</small>
+                </div>
+                <div class="score-block" style="border-left-color: #10b981;">
+                    <div class="score-label">Legal Basis</div>
+                    <div class="score-val" style="color: #10b981; font-size: 1.4rem;">Article 57</div>
+                    <small style="color: #64748b;">Recruitment & Selection</small>
+                </div>
+            </div>
+
+            <!-- SUB-TABS TOOLBAR FOR SHORT -->
+            <div class="sub-tabs-toolbar">
+                <button type="button" class="sub-tab-btn active" onclick="setSubTab('short', 'exec')"><i class="fas fa-file-alt"></i> 1. Executive Summary</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('short', 'context')"><i class="fas fa-id-card"></i> 2. System Context</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('short', 'verdict')"><i class="fas fa-gavel"></i> 3. Classification Verdict</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('short', 'health')"><i class="fas fa-traffic-light"></i> 4. Compliance Health Check</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('short', 'actions')"><i class="fas fa-tasks"></i> 5. Priority Action Plan</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('short', 'upgrade')"><i class="fas fa-arrow-up"></i> 6. Upgrade Roadmap</button>
+            </div>
+
+            <div class="dossier-body">
+                <div class="report-download-strip">
+                    <div>
+                        <strong style="color: #166534; font-size: 1.05rem; display: block;">Quick Assessment (Short Report — 9 Pages)</strong>
+                        <span style="font-size: 0.88rem; color: #15803d;">Authentic 9-page rapid assessment output generated by the Veritas4ai engine.</span>
+                    </div>
+                    <a href="{{ url_for('static', filename='samples/Veritas4AI_Sample_Quick_Assessment_Short.pdf') }}" download class="btn-download-pdf">
+                        <i class="fas fa-file-pdf"></i> Download Official PDF (9p)
+                    </a>
+                </div>
+
+                <!-- Sub 1: Exec -->
+                <div id="sub-short-exec" class="tab-content-block active">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">1. Executive Summary & Rapid Findings</h3>
+                    <p style="color: var(--text-secondary, #334155); line-height: 1.7; font-size: 0.95rem; margin-bottom: 20px;">
+                        HireVue AI Assessments is a recruitment tool leveraging AI to evaluate candidates. While it offers efficiency in the hiring process, it raises significant compliance concerns under the EU AI Act as it impacts employment decisions and fundamental rights. The system must address transparency, potential biases, and human oversight to align with regulatory requirements. Currently, it exhibits a high-risk profile, necessitating robust measures to ensure compliance and protect individuals' rights.
+                    </p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px;">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px;">
+                            <span class="tag-pill tag-crit">Critical Gap</span>
+                            <div style="margin-top: 6px; font-weight: 600;">Insufficient transparency in AI operations and candidate outcomes.</div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px;">
+                            <span class="tag-pill tag-high">Observation</span>
+                            <div style="margin-top: 6px; font-weight: 600;">Potential for demographic bias in AI-driven scoring models.</div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px;">
+                            <span class="tag-pill tag-crit">Critical Gap</span>
+                            <div style="margin-top: 6px; font-weight: 600;">Lacks comprehensive human oversight and intervention mechanisms.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub 2: Context -->
+                <div id="sub-short-context" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">2. System Context & Identity Card</h3>
+                    <table class="audit-table">
+                        <tr><td style="width: 25%; font-weight: bold; background: #f8fafc;">Application Name</td><td>HireVue AI Assessments</td></tr>
+                        <tr><td style="font-weight: bold; background: #f8fafc;">Provider / Vendor</td><td>Automated System (TalentTech Global SA)</td></tr>
+                        <tr><td style="font-weight: bold; background: #f8fafc;">Key Function</td><td>Candidate Assessment Tool & Predictive Scoring Engine</td></tr>
+                        <tr><td style="font-weight: bold; background: #f8fafc;">Brief Description</td><td>An AI-driven platform used in recruitment to evaluate candidates' skills and competencies through video interviews. The system employs natural language processing and computer vision to analyze verbal and non-verbal cues.</td></tr>
+                    </table>
+                </div>
+
+                <!-- Sub 3: Verdict -->
+                <div id="sub-short-verdict" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">3. Regulatory Classification Verdict</h3>
+                    <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 15px;">
+                        <strong style="color: #991b1b; font-size: 1.1rem; display: block;">Final Verdict: High-Risk AI System</strong>
+                        <span style="color: #b91c1c; font-size: 0.9rem;">Legal Basis: EU AI Act, Article 57 & Annex III, Point 4(b)</span>
+                    </div>
+                    <p style="color: #475569; line-height: 1.7; font-size: 0.92rem;">
+                        HireVue AI Assessments are used in the recruitment and selection process, which is identified as a high-risk category under the EU AI Act. These systems can significantly impact individuals' employment opportunities and career prospects by influencing decisions on hiring, promotion, and worker management. The potential for adverse impacts on individuals' livelihoods and the perpetuation of historical discrimination patterns underscores the necessity for this classification.
+                    </p>
+                </div>
+
+                <!-- Sub 4: Health Check -->
+                <div id="sub-short-health" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">4. Compliance Health Check (Traffic Light Assessment)</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Article</th><th style="text-align: center;">Status</th><th>Quick Assessment Findings</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Art. 15 (Performance)</strong></td><td style="text-align: center;"><span class="tag-pill tag-good">GOOD</span></td><td>Performance metrics are well-defined and effectively track system efficiency and accuracy.</td></tr>
+                            <tr><td><strong>Art. 14 (Human Oversight)</strong></td><td style="text-align: center;"><span class="tag-pill tag-crit">CRITICAL</span></td><td>Human oversight mechanisms are insufficient and do not adequately prevent potential AI misuse.</td></tr>
+                            <tr><td><strong>Art. 13 (Transparency)</strong></td><td style="text-align: center;"><span class="tag-pill tag-high">PARTIAL</span></td><td>Transparency measures exist but need enhancement to ensure clear user guidance and understanding.</td></tr>
+                            <tr><td><strong>Art. 10 (Data Governance)</strong></td><td style="text-align: center;"><span class="tag-pill tag-high">PARTIAL</span></td><td>Data governance practices are partially implemented but require improvements in data quality and diversity.</td></tr>
+                            <tr><td><strong>Art. 9 (Risk Management)</strong></td><td style="text-align: center;"><span class="tag-pill tag-crit">CRITICAL</span></td><td>Risk management protocols are underdeveloped and lack comprehensive coverage.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 5: Actions -->
+                <div id="sub-short-actions" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">5. Priority Action Plan</h3>
+                    <div class="finding-card critical">
+                        <div class="finding-header"><span class="tag-pill tag-crit">GAP 1</span><strong>Insufficient human oversight mechanisms</strong></div>
+                        <p style="margin: 6px 0; font-size: 0.9rem;"><strong>Fix:</strong> Establish robust human oversight protocols, including detailed intervention procedures, to prevent and mitigate risks of incorrect AI behavior.</p>
+                    </div>
+                    <div class="finding-card high">
+                        <div class="finding-header"><span class="tag-pill tag-high">GAP 2</span><strong>Potential for bias and discrimination in recruitment assessments</strong></div>
+                        <p style="margin: 6px 0; font-size: 0.9rem;"><strong>Fix:</strong> Conduct a thorough bias audit of the AI system and implement corrective measures to ensure fairness and non-discrimination in recruitment processes.</p>
+                    </div>
+                    <div class="finding-card high">
+                        <div class="finding-header"><span class="tag-pill tag-high">GAP 3</span><strong>Lack of transparency in AI decision-making processes</strong></div>
+                        <p style="margin: 6px 0; font-size: 0.9rem;"><strong>Fix:</strong> Implement clear and comprehensive documentation that explains AI system decision-making processes to ensure informed use by deployers.</p>
+                    </div>
+                </div>
+
+                <!-- Sub 6: Upgrade -->
+                <div id="sub-short-upgrade" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">6. Documentation & Recommended Upgrade Path</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Feature</th><th style="text-align: center;">Short Report</th><th style="text-align: center;">Standard / Comprehensive</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>ISO 42001 Governance Mapping</strong></td><td style="text-align: center; color: #ef4444;">None ✗</td><td style="text-align: center; color: #166534; font-weight: bold;">Included ✓</td></tr>
+                            <tr><td><strong>Technical Documentation</strong></td><td style="text-align: center; color: #ef4444;">None ✗</td><td style="text-align: center; color: #166534; font-weight: bold;">Full Annex IV Inventory ✓</td></tr>
+                            <tr><td><strong>Compliance Matrix</strong></td><td style="text-align: center;">Summary</td><td style="text-align: center; color: #166534; font-weight: bold;">Full Clause-by-Clause ✓</td></tr>
+                            <tr><td><strong>Risk Classification</strong></td><td style="text-align: center;">Basic</td><td style="text-align: center; color: #166534; font-weight: bold;">Detailed Legal Analysis ✓</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TIER 2: STANDARD REPORT (25 PAGES)                                        -->
+        <!-- ========================================================================= -->
+        <div id="view-standard" class="tier-view-block" style="display: none;">
+            
+            <div class="scorecard-bar">
+                <div class="score-block" style="border-left-color: #0284c7;">
+                    <div class="score-label">Overall Risk Score</div>
+                    <div class="score-val" style="color: #0284c7;">75 <span style="font-size: 1rem; color: #64748b;">/ 100</span></div>
+                    <small style="color: #64748b;">Partial Compliance</small>
+                </div>
+                <div class="score-block" style="border-left-color: #ef4444;">
+                    <div class="score-label">Key Findings</div>
+                    <div class="score-val" style="color: #ef4444;">3 <span style="font-size: 1rem; color: #64748b;">Critical</span></div>
+                    <small style="color: #64748b;">5 Actions Mapped</small>
+                </div>
+                <div class="score-block" style="border-left-color: #10b981;">
+                    <div class="score-label">Total Remediation Budget</div>
+                    <div class="score-val" style="color: #10b981;">€185,000</div>
+                    <small style="color: #64748b;">ROI Horizon: 12-18 Months</small>
+                </div>
+                <div class="score-block" style="border-left-color: #f59e0b;">
+                    <div class="score-label">Risk Avoidance</div>
+                    <div class="score-val" style="color: #f59e0b; font-size: 1.4rem;">Up to 6%</div>
+                    <small style="color: #64748b;">Mitigates Turnover Fines</small>
+                </div>
+            </div>
+
+            <!-- SUB-TABS TOOLBAR FOR STANDARD -->
+            <div class="sub-tabs-toolbar">
+                <button type="button" class="sub-tab-btn active" onclick="setSubTab('standard', 'scorecard')"><i class="fas fa-chart-bar"></i> 1. Compliance Scorecard</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('standard', 'matrix')"><i class="fas fa-th-list"></i> 2. Articles 9–15 Master Matrix</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('standard', 'risks')"><i class="fas fa-exclamation-triangle"></i> 3. Top 5 Critical Risks</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('standard', 'oversight')"><i class="fas fa-user-shield"></i> 4. Data Governance & Oversight</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('standard', 'financials')"><i class="fas fa-euro-sign"></i> 5. Strategic Roadmap & Budget</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('standard', 'casestudy')"><i class="fas fa-briefcase"></i> 6. Operational Case Studies</button>
+            </div>
+
+            <div class="dossier-body">
+                <div class="report-download-strip">
+                    <div>
+                        <strong style="color: #166534; font-size: 1.05rem; display: block;">Standard Technical Report (25 Pages)</strong>
+                        <span style="font-size: 0.88rem; color: #15803d;">Articles 9-15 technical narrative, Top 5 Risks Matrix, and €185k ROI Roadmap.</span>
+                    </div>
+                    <a href="{{ url_for('static', filename='samples/Veritas4AI_Sample_Standard_Report.pdf') }}" download class="btn-download-pdf">
+                        <i class="fas fa-file-pdf"></i> Download Official PDF (25p)
+                    </a>
+                </div>
+
+                <!-- Sub 1: Scorecard -->
+                <div id="sub-standard-scorecard" class="tab-content-block active">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">1. Executive Compliance Scorecard Breakdown</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Compliance Dimension</th><th style="text-align: center;">Score</th><th>Assurance Status & Finding</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Safety & Cybersecurity (Art. 15)</strong></td><td style="text-align: center; font-weight: bold; color: #166534;">80 / 100</td><td><span class="tag-pill tag-good">STRONG COMPLIANCE</span> — Robustness testing conducted regularly; effective encryption in place.</td></tr>
+                            <tr><td><strong>Technical Documentation (Art. 11)</strong></td><td style="text-align: center; font-weight: bold; color: #166534;">75 / 100</td><td><span class="tag-pill tag-good">STRONG COMPLIANCE</span> — Comprehensive system overview and model lifecycle documented.</td></tr>
+                            <tr><td><strong>Transparency & Information (Art. 13)</strong></td><td style="text-align: center; font-weight: bold;">70 / 100</td><td><span class="tag-pill tag-med">MODERATE COMPLIANCE</span> — User guide available; candidate feedback explainability needs enhancement.</td></tr>
+                            <tr><td><strong>Data Governance (Art. 10)</strong></td><td style="text-align: center; font-weight: bold;">65 / 100</td><td><span class="tag-pill tag-med">MODERATE COMPLIANCE</span> — Effective data management employed; bias monitoring operational.</td></tr>
+                            <tr><td><strong>Human Oversight Protocol (Art. 14)</strong></td><td style="text-align: center; font-weight: bold; color: #b91c1c;">60 / 100</td><td><span class="tag-pill tag-crit">CRITICAL PRIORITY</span> — Oversight mechanisms exist, but moderator training needs enhancement.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 2: Matrix -->
+                <div id="sub-standard-matrix" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">2. EU AI Act Master Compliance Matrix (Articles 9–15)</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Article</th><th>Requirement</th><th style="text-align: center;">Status</th><th>Key Findings & Evidence</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Art. 15</strong></td><td>Accuracy and security measures</td><td style="text-align: center;"><span class="tag-pill tag-good">COMPLIANT</span></td><td>Robustness testing conducted regularly. Cybersecurity measures effectively implemented.</td></tr>
+                            <tr><td><strong>Art. 14</strong></td><td>Human oversight mechanisms</td><td style="text-align: center;"><span class="tag-pill tag-high">PARTIALLY COMPLIANT</span></td><td>Human oversight mechanisms in place. Moderator training programs need enhancement.</td></tr>
+                            <tr><td><strong>Art. 13</strong></td><td>Transparency measures</td><td style="text-align: center;"><span class="tag-pill tag-good">COMPLIANT</span></td><td>User instructions are comprehensive. Interpretability methods implemented.</td></tr>
+                            <tr><td><strong>Art. 10</strong></td><td>Data governance protocols</td><td style="text-align: center;"><span class="tag-pill tag-good">COMPLIANT</span></td><td>Effective data management strategy employed. Bias monitoring mechanisms operational.</td></tr>
+                            <tr><td><strong>Art. 9</strong></td><td>Risk management framework</td><td style="text-align: center;"><span class="tag-pill tag-high">PARTIALLY COMPLIANT</span></td><td>Ongoing hazard identification in place. Residual risk acceptance criteria need refinement.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 3: Risks -->
+                <div id="sub-standard-risks" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">3. Top 5 Critical Risks Matrix (ISO/IEC 23894)</h3>
+                    <div class="finding-card critical">
+                        <div class="finding-header"><strong>Algorithmic Bias in Recruitment Decisions</strong><span class="tag-pill tag-crit">CRITICAL</span></div>
+                        <p style="font-size: 0.9rem; margin: 4px 0;"><strong>Mitigation Strategy:</strong> Conduct regular audits for bias and ensure datasets are representative of diverse demographics.</p>
+                    </div>
+                    <div class="finding-card critical">
+                        <div class="finding-header"><strong>Unintended Discrimination</strong><span class="tag-pill tag-crit">CRITICAL</span></div>
+                        <p style="font-size: 0.9rem; margin: 4px 0;"><strong>Mitigation Strategy:</strong> Apply fairness-enhancing technologies and diversify the training data continuously.</p>
+                    </div>
+                    <div class="finding-card high">
+                        <div class="finding-header"><strong>Inadequate Human Oversight</strong><span class="tag-pill tag-high">HIGH</span></div>
+                        <p style="font-size: 0.9rem; margin: 4px 0;"><strong>Mitigation Strategy:</strong> Ensure human review and intervention capabilities are integrated into the AI system's workflow.</p>
+                    </div>
+                    <div class="finding-card high">
+                        <div class="finding-header"><strong>Lack of Transparency in AI Decisions</strong><span class="tag-pill tag-high">HIGH</span></div>
+                        <p style="font-size: 0.9rem; margin: 4px 0;"><strong>Mitigation Strategy:</strong> Enhance transparency by providing clear explanations of AI decision processes to users.</p>
+                    </div>
+                    <div class="finding-card high">
+                        <div class="finding-header"><strong>Data Privacy Concerns</strong><span class="tag-pill tag-high">HIGH</span></div>
+                        <p style="font-size: 0.9rem; margin: 4px 0;"><strong>Mitigation Strategy:</strong> Implement strict data governance protocols and ensure compliance with GDPR regulations.</p>
+                    </div>
+                </div>
+
+                <!-- Sub 4: Oversight -->
+                <div id="sub-standard-oversight" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">4. Human Oversight Protocol (Art. 14 Roles)</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Role</th><th>Oversight Responsibility</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>AI Ethics Officer</strong></td><td>Guides ethical AI usage and oversees training programs to reduce automation bias.</td></tr>
+                            <tr><td><strong>Fairness Auditor</strong></td><td>Conducts regular audits to detect and rectify biases in AI assessments.</td></tr>
+                            <tr><td><strong>Human Resources Analyst</strong></td><td>Interprets AI assessment results and makes final hiring decisions, ensuring fairness and accuracy.</td></tr>
+                            <tr><td><strong>Data Protection Officer</strong></td><td>Ensures data handling practices comply with GDPR and oversees data privacy measures.</td></tr>
+                            <tr><td><strong>AI Risk Officer</strong></td><td>Monitors AI systems for compliance with regulatory standards and oversees risk mitigation strategies.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 5: Financials -->
+                <div id="sub-standard-financials" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">5. Strategic Roadmap & Financial Snapshot</h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                            <div><span style="color:#64748b; font-size:0.85rem; text-transform:uppercase;">Total Remediation Budget</span><div style="font-size: 1.8rem; font-weight:800; color:#0f172a;">~€185,000</div></div>
+                            <div><span style="color:#64748b; font-size:0.85rem; text-transform:uppercase;">Payback Horizon</span><div style="font-size: 1.8rem; font-weight:800; color:#10b981;">12–18 Months</div></div>
+                        </div>
+                    </div>
+                    <div class="finding-card high"><div class="finding-header"><span>Inadequate human oversight mechanisms (HITL Protocol)</span><strong>€50,000 (P1)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Bias detection and mitigation processes (Algorithm Audit)</span><strong>€45,000 (P2)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Insufficient data governance procedures (Auditing Protocols)</span><strong>€40,000 (P2)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Lack of comprehensive transparency measures (User Guides)</span><strong>€30,000 (P1)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Limited user education on system capabilities (Training Modules)</span><strong>€20,000 (P3)</strong></div></div>
+                </div>
+
+                <!-- Sub 6: Cases -->
+                <div id="sub-standard-casestudy" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">6. Operational Case Studies</h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 15px;">
+                        <h4 style="margin: 0 0 6px 0; color:#0f172a;">Case 1: Strengthening Data Privacy in AI Recruitment Systems</h4>
+                        <p style="font-size: 0.88rem; color:#475569; margin: 0 0 8px 0;">Implementation of ISO/IEC 27701 privacy information management standards and TLS 1.3 encryption.</p>
+                        <strong style="color: #166534; font-size: 0.85rem;">Result: 80% reduction in data breach incidents | Boosted user confidence by 25%.</strong>
+                    </div>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px;">
+                        <h4 style="margin: 0 0 6px 0; color:#0f172a;">Case 2: Implementing Fairness & Non-Discrimination</h4>
+                        <p style="font-size: 0.88rem; color:#475569; margin: 0 0 8px 0;">Comprehensive algorithmic audit under ISO 23894 and continuous monitoring to detect concept drift in real time.</p>
+                        <strong style="color: #166534; font-size: 0.85rem;">Result: 50% decrease in bias-related complaints | Increased market share by 15%.</strong>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- TIER 3: COMPREHENSIVE DOSSIER (ANNEX IV — 69 PAGES)                       -->
+        <!-- ========================================================================= -->
+        <div id="view-comprehensive" class="tier-view-block" style="display: block;">
+            
+            <div class="scorecard-bar">
+                <div class="score-block" style="border-left-color: #8b5cf6;">
+                    <div class="score-label">1. Overall Readiness</div>
+                    <div class="score-val" style="color: #8b5cf6;">70 <span style="font-size: 1rem; color: #64748b;">/ 100</span></div>
+                    <small style="color: #64748b;">Target Score: 90 / 100</small>
+                </div>
+                <div class="score-block" style="border-left-color: #10b981;">
+                    <div class="score-label">Technical Assurance</div>
+                    <div class="score-val" style="color: #10b981;">88 <span style="font-size: 1rem; color: #64748b;">/ 100</span></div>
+                    <small style="color: #64748b;">Annex IV Dossier Ready</small>
+                </div>
+                <div class="score-block" style="border-left-color: #f59e0b;">
+                    <div class="score-label">Critical Gaps</div>
+                    <div class="score-val" style="color: #f59e0b;">10 <span style="font-size: 1rem; color: #64748b;">Major</span></div>
+                    <small style="color: #64748b;">CapEx: €655,000</small>
+                </div>
+                <div class="score-block" style="border-left-color: #0284c7;">
+                    <div class="score-label">Remediation Horizon</div>
+                    <div class="score-val" style="color: #0284c7;">24 <span style="font-size: 1rem; color: #64748b;">Mo.</span></div>
+                    <small style="color: #64748b;">ROI Payback: 2 Years</small>
+                </div>
+            </div>
+
+            <!-- SUB-TABS TOOLBAR FOR COMPREHENSIVE -->
+            <div class="sub-tabs-toolbar">
+                <button type="button" class="sub-tab-btn active" onclick="setSubTab('comprehensive', 'reasoning')"><i class="fas fa-brain"></i> 1. Score Reasoning & Top 5</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('comprehensive', 'architecture')"><i class="fas fa-network-wired"></i> 2. System Architecture</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('comprehensive', 'modelcard')"><i class="fas fa-microchip"></i> 3. Model Card & Specs</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('comprehensive', 'fmea')"><i class="fas fa-shield-virus"></i> 4. FMEA Risk Register</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('comprehensive', 'compliance')"><i class="fas fa-balance-scale"></i> 5. Articles 9–15 Master Matrix</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('comprehensive', 'actions')"><i class="fas fa-money-check-alt"></i> 6. Strategic Plan (€655k)</button>
+                <button type="button" class="sub-tab-btn" onclick="setSubTab('comprehensive', 'critique')"><i class="fas fa-user-check"></i> 7. Auditor Panel Critique</button>
+            </div>
+
+            <div class="dossier-body">
+                <div class="report-download-strip">
+                    <div>
+                        <strong style="color: #166534; font-size: 1.05rem; display: block;">Comprehensive Technical Dossier (Annex IV — 69 Pages)</strong>
+                        <span style="font-size: 0.88rem; color: #15803d;">Official full 15-chapter audit dossier generated by Veritas4ai with complete Annex IV evidence inventory.</span>
+                    </div>
+                    <a href="{{ url_for('static', filename='samples/Veritas4AI_Sample_Comprehensive_Dossier_Long.pdf') }}" download class="btn-download-pdf">
+                        <i class="fas fa-file-pdf"></i> Download Official PDF (69p)
+                    </a>
+                </div>
+
+                <!-- Sub 1: Reasoning -->
+                <div id="sub-comprehensive-reasoning" class="tab-content-block active">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">1. Executive Briefing & Calibrated Score Reasoning</h3>
+                    <p style="color: var(--text-secondary, #334155); line-height: 1.7; font-size: 0.95rem; margin-bottom: 20px;">
+                        The overall compliance score of <strong>70/100</strong> reflects the current maturity level of HireVue AI Assessments in aligning with EU AI Act requirements. The target score of <strong>90/100</strong> indicates the potential for significant improvement, achievable through strategic remediation efforts. Inherent risks, including data bias and privacy concerns, are presently elevated but can be mitigated through enhanced governance and technical measures.
+                    </p>
+                    <h4 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 10px;">Critical Findings (Top 5 Areas)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                            <strong>Data Bias (Article 10): High Risk</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin-top: 6px;">Potential biases in candidate assessment resulting from biased training data or algorithmic design flaws.</p>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                            <strong>Data Privacy (Article 9 & GDPR): High Risk</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin-top: 6px;">Insufficient safeguards for candidate video and psychometric data protection.</p>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                            <strong>Transparency Deficiency (Articles 13 & 14): Medium Risk</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin-top: 6px;">Lack of transparency in AI decision-making processes undermining candidate trust and oversight.</p>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                            <strong>Human Oversight (Article 14): Medium Risk</strong>
+                            <p style="color: #64748b; font-size: 0.85rem; margin-top: 6px;">Inadequate human oversight mechanisms in place to monitor automated rejections.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub 2: Architecture -->
+                <div id="sub-comprehensive-architecture" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">2. System Architecture & Tech Stack (Chapter 5)</h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; line-height: 1.8; font-size: 0.92rem;">
+                        • <strong>Microservices & Orchestration:</strong> Cloud-native deployment on AWS using Kubernetes (EKS) for automated container scaling.<br>
+                        • <strong>AI Processing Stack:</strong> Python, TensorFlow, PyTorch, Scikit-learn, and FastAPI for real-time inference microservices.<br>
+                        • <strong>Vector DB & Storage:</strong> Milvus Cluster for competency vector embeddings; PostgreSQL for structured candidate scoring; AWS S3 for video artifacts.<br>
+                        • <strong>Security Architecture:</strong> OAuth2 authentication, TLS 1.3 in-transit, and AES-256 at-rest encryption via AWS KMS.
+                    </div>
+                </div>
+
+                <!-- Sub 3: Model Card -->
+                <div id="sub-comprehensive-modelcard" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">3. Official Model Card (Chapter 7 & 13)</h3>
+                    <table class="audit-table">
+                        <thead><tr><th style="width: 30%;">Technical Parameter</th><th style="width: 70%;">Official Model Specification</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Architecture & Parameters</strong></td><td>Multi-Modal Transformer (~50M parameters): 12-layer Transformer Backbone (NLP), 8-layer CNN (Video), 4-layer RNN (Audio).</td></tr>
+                            <tr><td><strong>Training Data Corpus</strong></td><td>1,000,000+ video interviews representing diverse industries (70% Train, 15% Validation, 15% Test).</td></tr>
+                            <tr><td><strong>Performance Benchmarks</strong></td><td>Accuracy: <strong>93.2%</strong> | F1-Score: <strong>0.89</strong> | False Positive Rate: <strong>4.0%</strong> | Average Latency: <strong>1.5s</strong>.</td></tr>
+                            <tr><td><strong>Disparate Impact Metric</strong></td><td>Measured Demographic Parity Delta: <strong>0.02</strong> (Compliant with target &lt;0.05 four-fifths rule).</td></tr>
+                            <tr><td><strong>Stress Testing Scenarios</strong></td><td>Adversarial text injection degradation: -15% (FAIL) | Data corruption degradation: -7% | Low bandwidth degradation: -3% (PASS).</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 4: FMEA -->
+                <div id="sub-comprehensive-fmea" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">4. Full Risk Register & FMEA Matrix (Chapter 9.6)</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Component</th><th>Risk Description</th><th>Severity</th><th>Mitigation Control</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Decision-Making</strong></td><td>Algorithmic Discrimination from biased training data</td><td><span class="tag-pill tag-crit">HIGH / SEVERE</span></td><td>Integrate fairness constraints and continuous demographic parity monitoring.</td></tr>
+                            <tr><td><strong>System Operations</strong></td><td>Regulatory Non-compliance with EU AI Act & GDPR</td><td><span class="tag-pill tag-crit">MEDIUM / SEVERE</span></td><td>Conduct regular compliance audits and automated drift detection.</td></tr>
+                            <tr><td><strong>Decision-Making</strong></td><td>Lack of Human Oversight in automated rejections</td><td><span class="tag-pill tag-high">MEDIUM / HIGH</span></td><td>Ensure mandatory human review of all borderline AI outputs.</td></tr>
+                            <tr><td><strong>Data Storage</strong></td><td>Privacy Breach of candidate video interviews</td><td><span class="tag-pill tag-high">MEDIUM / HIGH</span></td><td>Enhance KMS encryption, access controls, and automated 5-year retention purges.</td></tr>
+                            <tr><td><strong>Data Preprocessing</strong></td><td>Data Poisoning affecting model predictions</td><td><span class="tag-pill tag-high">LOW / HIGH</span></td><td>Implement robust input validation and anomaly sanitization pipelines.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 5: Detailed Compliance -->
+                <div id="sub-comprehensive-compliance" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">5. Master Compliance Matrix (Chapter 10.3)</h3>
+                    <table class="audit-table">
+                        <thead><tr><th>Article</th><th>Requirement</th><th>Evidence Reference</th><th style="text-align: center;">Verdict</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Art. 15</strong></td><td>Real-time threat monitoring & cybersecurity</td><td>Threat Monitoring Logs & SOC-2</td><td style="text-align: center;"><span class="tag-pill tag-good">COMPLIANT</span></td></tr>
+                            <tr><td><strong>Art. 14</strong></td><td>Establish human oversight mechanisms</td><td>Oversight Policy Document</td><td style="text-align: center;"><span class="tag-pill tag-crit">PARTIAL</span></td></tr>
+                            <tr><td><strong>Art. 13</strong></td><td>Clear communication of AI capabilities</td><td>Operational User Guide</td><td style="text-align: center;"><span class="tag-pill tag-high">PARTIAL</span></td></tr>
+                            <tr><td><strong>Art. 11</strong></td><td>Documentation of AI model lifecycle</td><td>Model Lifecycle Docs v3.1</td><td style="text-align: center;"><span class="tag-pill tag-good">COMPLIANT</span></td></tr>
+                            <tr><td><strong>Art. 10</strong></td><td>Mitigation of biases & data representativeness</td><td>Bias Audit Report & Lineage Logs</td><td style="text-align: center;"><span class="tag-pill tag-crit">NON-COMPLIANT</span></td></tr>
+                            <tr><td><strong>Art. 9</strong></td><td>Continuous risk monitoring loop</td><td>Risk Register v2.4</td><td style="text-align: center;"><span class="tag-pill tag-good">COMPLIANT</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Sub 6: Actions & Budget -->
+                <div id="sub-comprehensive-actions" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">6. Strategic Action Plan & Financial Impact (Chapter 12)</h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                            <div><span style="color:#64748b; font-size:0.85rem; text-transform:uppercase;">Total CapEx to Close 10 Major Gaps</span><div style="font-size: 1.8rem; font-weight:800; color:#0f172a;">€655,000</div></div>
+                            <div><span style="color:#64748b; font-size:0.85rem; text-transform:uppercase;">Expected Payback Period</span><div style="font-size: 1.8rem; font-weight:800; color:#10b981;">Within 2 Years</div></div>
+                        </div>
+                    </div>
+                    <div class="finding-card critical"><div class="finding-header"><span>Deploy Real-time Monitoring & Drift Detection (Art. 73)</span><strong>€120,000 (P1)</strong></div></div>
+                    <div class="finding-card critical"><div class="finding-header"><span>Implement Robust Bias Detection Mechanisms (Art. 10)</span><strong>€100,000 (P1)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Standardize Data Management & Provenance Practices (Art. 28)</span><strong>€80,000 (P1)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Enhance Transparency in AI Decision-making (Art. 13)</span><strong>€75,000 (P1)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Develop Comprehensive Fundamental Rights Impact Assessments (Art. 96)</span><strong>€60,000 (P2)</strong></div></div>
+                    <div class="finding-card high"><div class="finding-header"><span>Clarify Data Provenance & Tracking Audits (Art. 11)</span><strong>€55,000 (P1)</strong></div></div>
+                    <div class="finding-card med"><div class="finding-header"><span>Improve User Training Programs for Effective Oversight (Art. 14)</span><strong>€50,000 (P2)</strong></div></div>
+                    <div class="finding-card med"><div class="finding-header"><span>Align with Emerging International Ethical Guidelines (Art. 28)</span><strong>€45,000 (P2)</strong></div></div>
+                    <div class="finding-card med"><div class="finding-header"><span>Expand Accessibility to System Limitations Documentation (Art. 12)</span><strong>€40,000 (P1)</strong></div></div>
+                    <div class="finding-card med"><div class="finding-header"><span>Establish Accessible Feedback & Complaint Channels (Art. 54)</span><strong>€30,000 (P3)</strong></div></div>
+                </div>
+
+                <!-- Sub 7: Auditor Critique -->
+                <div id="sub-comprehensive-critique" class="tab-content-block">
+                    <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); margin-bottom: 12px;">7. Notified Body Auditor Panel Review (Chapter 11)</h3>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 22px;">
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                            <strong>Auditor 1 (AI Ethics & Non-Discrimination Specialist)</strong>
+                            <p style="color: #475569; font-size: 0.88rem; margin-top: 6px;">
+                                "The system documentation is exceptionally thorough regarding system architecture and training mechanics. However, in an employment setting (Annex III, 4b), the absence of granular demographic disparate impact logs across non-majority cultural backgrounds is a major non-conformity. A Notified Body will not approve market deployment without empirical proof of non-discrimination."
+                            </p>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                            <strong>Auditor 2 (Technical & Cybersecurity Specialist)</strong>
+                            <p style="color: #475569; font-size: 0.88rem; margin-top: 6px;">
+                                "Technical resilience under SOC-2 and multi-zone AWS hosting is exemplary. Adversarial robustness against indirect prompt injection in candidate resume uploads requires formal token filters before full certification."
+                            </p>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+                            <strong>Auditor 3 (Legal & Conformity Assessment Officer)</strong>
+                            <p style="color: #475569; font-size: 0.88rem; margin-top: 6px;">
+                                "The proposed Post-Market Monitoring plan meets Article 72 requirements. We recommend allocating the indicated €655k remediation budget to fast-track ISO/IEC 42001 certification within 12 months."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(3, 105, 161, 0.08) 100%); border: 2px dashed #cbd5e1; border-radius: 14px; padding: 35px 25px; text-align: center; margin-top: 40px;">
+        <h3 style="font-family: var(--font-heading, 'Space Grotesk', sans-serif); font-size: 1.5rem; margin-bottom: 8px;">
+            Ready to evaluate your own AI system?
+        </h3>
+        <p style="color: #64748b; max-width: 600px; margin: 0 auto 20px auto; font-size: 0.95rem;">
+            Generate audit-ready EU AI Act compliance dossiers in minutes. Start with 3 complimentary evaluations.
+        </p>
+        <a href="{{ url_for('form_page') if current_user.is_authenticated else url_for('auth.register') }}" class="btn btn-primary" style="padding: 12px 30px; font-size: 1rem; border-radius: 8px;">
+            Start Free Assessment →
+        </a>
+    </div>
+
+</div>
+
+<script>
+    // Main Tier Switcher (Short vs Standard vs Comprehensive)
+    function setMainTier(tier) {
+        document.querySelectorAll('.tier-toggle-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        document.getElementById('view-short').style.display = 'none';
+        document.getElementById('view-standard').style.display = 'none';
+        document.getElementById('view-comprehensive').style.display = 'none';
+
+        if (tier === 'short') {
+            document.getElementById('view-short').style.display = 'block';
+        } else if (tier === 'standard') {
+            document.getElementById('view-standard').style.display = 'block';
+        } else if (tier === 'comprehensive') {
+            document.getElementById('view-comprehensive').style.display = 'block';
+        }
+    }
+
+    // Sub-Tabs Switcher for each Tier
+    function setSubTab(tier, subKey) {
+        const viewEl = document.getElementById('view-' + tier);
+        if (!viewEl) return;
+
+        // Reset active state for buttons in this tier toolbar
+        viewEl.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
+        // Reset active state for content blocks in this tier
+        viewEl.querySelectorAll('.tab-content-block').forEach(b => b.classList.remove('active'));
+
+        event.currentTarget.classList.add('active');
+        const target = document.getElementById('sub-' + tier + '-' + subKey);
+        if (target) {
+            target.classList.add('active');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,202 @@
+:root {
+    /* Primary */
+    --primary-900: #0D3B3E;
+    --primary-700: #136B72;
+    --primary-500: #1BA7B3;
+    --primary-300: #7EDCE2;
+    --primary-100: #E0F7FA;
+
+    /* Neutrals (Light Mode Default) */
+    --grey-900: #101316;
+    --grey-700: #4F566B;
+    --grey-500: #6B727A;
+    --grey-300: #D4D8DD;
+    --grey-200: #E6E9ED;
+    --grey-100: #F7F8FA;
+    --white: #FFFFFF;
+
+    /* Card & Surface Defaults */
+    --bg-page: #FFFFFF;
+    --bg-surface: #FFFFFF;
+    --border-color: #E6E9ED;
+    --text-primary: #101316;
+    --text-secondary: #4F566B;
+
+    /* Accents */
+    --accent-green: #19C190;
+    --accent-blue: #3E8AFF;
+    --accent-orange: #FFB356;
+    --danger: #D92D20;
+
+    /* Spacing & Font */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(16, 24, 40, 0.1), 0 2px 4px -1px rgba(16, 24, 40, 0.06);
+    --shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, 0.08), 0 4px 6px -2px rgba(16, 24, 40, 0.03);
+    --focus-ring: 0 0 0 4px rgba(27, 167, 179, 0.15);
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --transition: all 0.2s ease-in-out;
+}
+
+*, *::before, *::after { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body { 
+    font-family: var(--font-body); 
+    background: var(--bg-page); 
+    color: var(--text-primary); 
+    -webkit-font-smoothing: antialiased; 
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.site-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+}
+
+/* =========================================================
+   DARK THEME: VARIABLES RE-DEFINITION
+   ========================================================= */
+html[data-theme="dark"],
+body.dark-theme,
+body.dark-mode {
+    /* Αντιστρέφουμε τις μεταβλητές ώστε όλα τα elements να γίνουν αυτόματα Dark */
+    --white: #131f37 !important;           /* Ό,τι ήταν λευκό γίνεται Dark Slate Card */
+    --grey-100: #1e293b !important;        /* Τα ανοιχτά γκρι panels γίνονται Dark */
+    --grey-200: #2a374e !important;
+    --grey-300: #334155 !important;
+    --grey-500: #94a3b8 !important;        /* Τα δευτερεύοντα κείμενα γίνονται ανοιχτό γκρι */
+    --grey-700: #cbd5e1 !important;
+    --grey-900: #f8fafc !important;        /* Τα κύρια κείμενα γίνονται λευκά */
+
+    --bg-page: #0b1329 !important;         /* Σκούρο φόντο σελίδας */
+    --bg-surface: #131f37 !important;      /* Φόντο καρτών */
+    --border-color: #1e293b !important;
+    --text-primary: #f8fafc !important;
+    --text-secondary: #94a3b8 !important;
+
+    background-color: #0b1329 !important;
+    color: #f8fafc !important;
+}
+
+/* =========================================================
+   FORCED OVERRIDES ΓΙΑ ΤΙΣ ΚΑΡΤΕΣ ΤΟΥ LANDING PAGE
+   ========================================================= */
+html[data-theme="dark"] section,
+html[data-theme="dark"] .landing-container,
+html[data-theme="dark"] .hero-section,
+body.dark-theme section,
+body.dark-theme .landing-container {
+    background: transparent !important;
+    color: #f8fafc !important;
+}
+
+/* Πιάνει ΟΛΕΣ τις κάρτες στο landing (Why Choose Our Tool & Report Options) */
+html[data-theme="dark"] div[class*="card"],
+html[data-theme="dark"] div[class*="item"],
+html[data-theme="dark"] div[class*="option"],
+html[data-theme="dark"] div[class*="tier"],
+body.dark-theme div[class*="card"],
+body.dark-theme div[class*="item"],
+body.dark-theme div[class*="option"],
+body.dark-theme div[class*="tier"] {
+    background-color: #131f37 !important;
+    border: 1px solid #1e293b !important;
+    color: #f8fafc !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Κείμενα, τίτλοι και λίστες μέσα στις κάρτες */
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] strong,
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme strong {
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] span,
+html[data-theme="dark"] li,
+body.dark-theme p,
+body.dark-theme span,
+body.dark-theme li {
+    color: #cbd5e1 !important;
+}
+
+/* Εξαιρούμε τα buttons και badges από το να γίνουν γκρι */
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] [class*="btn-"],
+html[data-theme="dark"] .badge,
+body.dark-theme .btn,
+body.dark-theme [class*="btn-"],
+body.dark-theme .badge {
+    color: inherit;
+}
+
+/* Τα άσπρα outlined buttons στις κάρτες */
+html[data-theme="dark"] div[class*="card"] a,
+html[data-theme="dark"] div[class*="card"] button,
+body.dark-theme div[class*="card"] a,
+body.dark-theme div[class*="card"] button {
+    border-color: #334155 !important;
+}
+
+/* Navbar Dark Adaptation */
+html[data-theme="dark"] .navbar-wrapper,
+body.dark-theme .navbar-wrapper {
+    background-color: #0f172a !important;
+    border-bottom-color: #1e293b !important;
+}
+
+html[data-theme="dark"] .nav-center-menu,
+body.dark-theme .nav-center-menu {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .nav-pill-item,
+body.dark-theme .nav-pill-item {
+    color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .nav-pill-item.active,
+body.dark-theme .nav-pill-item.active {
+    background: #0f172a !important;
+    color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .user-profile-btn,
+body.dark-theme .user-profile-btn {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .user-dropdown-menu,
+body.dark-theme .user-dropdown-menu {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
